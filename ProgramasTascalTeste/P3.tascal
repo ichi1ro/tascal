@@ -1,0 +1,6 @@
+program P3;
+var b: boolean;
+begin
+  b := true;
+  write(b)
+end.

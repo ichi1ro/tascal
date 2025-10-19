@@ -1,0 +1,6 @@
+program PErr17;
+var x: integer;
+begin
+  x := 10 % 3;
+  write(x)
+end.

@@ -1,0 +1,12 @@
+program P7;
+var i, s: integer;
+begin
+  i := 0;
+  s := 0;
+  while i < 5 do
+  begin
+    s := s + i;
+    i := i + 1
+  end;
+  write(s)
+end.

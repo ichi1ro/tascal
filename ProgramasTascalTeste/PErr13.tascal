@@ -1,0 +1,7 @@
+program PErr13;
+var x: integer;
+var b: boolean;
+begin
+  x := 10; b := false;
+  write(x div b)
+end.

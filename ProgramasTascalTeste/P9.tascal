@@ -1,0 +1,8 @@
+program P9;
+var x, y: integer;
+var ok: boolean;
+begin
+  read(x, y);
+  ok := (x <> y) and not (x < 0 or y < 0);
+  write(x + y, x * y, ok)
+end.

@@ -1,0 +1,25 @@
+program P10;
+var n: integer;
+var a, b, t: integer;
+var nonneg: boolean;
+begin
+  read(n);
+  nonneg := not (n < 0);
+  if nonneg then
+  begin
+    a := 0;
+    b := 1;
+    while a <= n do
+    begin
+      write(a);
+      t := a + b;
+      a := b;
+      b := t
+    end
+  end
+  else
+  begin
+    n := -n;
+    write(n)
+  end
+end.

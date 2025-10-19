@@ -1,0 +1,9 @@
+program P5;
+var x: integer;
+begin
+  x := 5;
+  if x >= 5 then
+    write(true)
+  else
+    write(false)
+end.
