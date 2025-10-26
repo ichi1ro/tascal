@@ -50,6 +50,7 @@ def erro_semantico(op, le: Tipo, ld: Tipo, esperado: str):
 precedence = (
     ('left', 'OR'),
     ('left', 'AND'),
+    ('nonassoc', '=', 'DIFERENTE', '<', 'MENOR_IGUAL', '>', 'MAIOR_IGUAL'),
     ('left', '+', '-'),
     ('left', '*', 'DIV'),
     ('right', 'NOT', 'NEG'),
@@ -65,7 +66,6 @@ def p_empty(p):
 
 def p_program(p):
     '''program : PROGRAM ID ';' block '.' '''
-
 
 def p_block(p):
     '''block : declaration_section compound_cmd
@@ -132,8 +132,12 @@ def p_expr_list(p):
 # Expressões
 # -----------------------------------------------------
 
+# lógicos para expr (AND, OR, NOT)
 def p_expr(p):
-    '''expr : simple_expr
+    '''expr : expr AND expr
+            | expr OR expr
+            | NOT expr %prec NOT
+            | simple_expr
             | simple_expr relation simple_expr'''
 
 def p_relation(p):
@@ -147,14 +151,12 @@ def p_relation(p):
 def p_simple_expr(p):
     '''simple_expr : term
                    | simple_expr '+' term
-                   | simple_expr '-' term
-                   | simple_expr OR term'''
+                   | simple_expr '-' term'''
 
 def p_term(p):
     '''term : factor
             | term '*' factor
-            | term DIV factor
-            | term AND factor'''
+            | term DIV factor'''
 
 def p_factor(p):
     '''factor : ID
@@ -162,29 +164,20 @@ def p_factor(p):
               | TRUE
               | FALSE
               | '(' expr ')'
-              | NOT factor
               | '-' factor %prec NEG'''
 
 # -----------------------------------------------------
 # Erros
 # -----------------------------------------------------
 
-#def p_error(p):
-#    if p:
-#        print(f"ERRO SINTÁTICO: próximo a '{p.value}' (linha {p.lineno})")
-#    else:
-        # fim do arquivo (EOF): pode ter blocos BEGIN sem END
-        # percorre a pilha de parsing e procura BEGIN aberto
-        # (PLY não expõe pilha diretamente, então testamos via último token lido)
-#        print("ERRO SINTÁTICO: fim inesperado do arquivo — verifique se todos os blocos 'BEGIN ... END' foram finalizados.")
 def p_error(p):
     # garante que o lexer atual está sendo rastreado
-    if hasattr(p, 'lexer') and not hasattr(p.lexer, '_wrapped_for_blocks'):
+    if p and hasattr(p, 'lexer') and not hasattr(p.lexer, '_wrapped_for_blocks'):
         p.lexer._wrapped_for_blocks = True
         track_blocks(p.lexer)
 
     if p:
-        print(f"ERRO SINTÁTICO: próximo a '{p.value}' (linha {p.lineno})")
+        print(f"ERRO SINTÁTICO: próximo a '{p.value}' (linha {p.lineno}). Verifique se não está sendo usado uma palavra reservada onde não devia.")
     else:
         if begin_stack:
             while begin_stack:
@@ -214,12 +207,6 @@ def p_compound_cmd_error(p):
     '''compound_cmd : BEGIN error END'''
     print(f"ERRO SINTÁTICO: comandos inválidos dentro de 'begin ... end' (linha {p.lineno(1)}).")
     parser.errok()
-
-# Recupera comando inválido após ';'
-#def p_cmd_list_error_after_semicolon(p):
-#    '''cmd_list : cmd_list ';' error'''
-#    print(f"ERRO SINTÁTICO: comando inválido após ';' (linha {p.lineno(1)}).")
-#    parser.errok()
 
 # Recupera comando único inválido
 def p_cmd_list_error_single(p):
@@ -286,7 +273,22 @@ def p_expr_list_error(p):
     '''expr_list : expr_list ',' error'''
     print(f"ERRO SINTÁTICO: expressão inválida após ',' (linha {p.lineno(1)}).")
     parser.errok()
-    
+
+def p_expr_logic_error_and(p):
+    'expr : expr AND error'
+    print(f"ERRO SINTÁTICO: expressão inválida após 'and' (linha {p.lineno(3)}).")
+    parser.errok()
+
+def p_expr_logic_error_or(p):
+    'expr : expr OR error'
+    print(f"ERRO SINTÁTICO: expressão inválida após 'or' (linha {p.lineno(3)}).")
+    parser.errok()
+
+def p_expr_logic_error_not(p):
+    'expr : NOT error'
+    print(f"ERRO SINTÁTICO: expressão inválida após 'not' (linha {p.lineno(1)}).")
+    parser.errok()
+
 def p_expr_error_relation_right(p):
     '''expr : simple_expr relation error'''
     print(f"ERRO SINTÁTICO: expressão inválida à direita do operador relacional (linha {p.lineno(1)}).")
@@ -294,16 +296,14 @@ def p_expr_error_relation_right(p):
 
 def p_simple_expr_error_right(p):
     '''simple_expr : simple_expr '+' error
-                   | simple_expr '-' error
-                   | simple_expr OR error'''
-    print(f"ERRO SINTÁTICO: termo inválido após operador aditivo/lógico (linha {p.lineno(1)}).")
+                   | simple_expr '-' error'''
+    print(f"ERRO SINTÁTICO: termo inválido após operador aditivo (linha {p.lineno(1)}).")
     parser.errok()
     
 def p_term_error_right(p):
     '''term : term '*' error
-            | term DIV error
-            | term AND error'''
-    print(f"ERRO SINTÁTICO: fator inválido após operador multiplicativo/divisão/lógico (linha {p.lineno(1)}).")
+            | term DIV error'''
+    print(f"ERRO SINTÁTICO: fator inválido após operador multiplicativo/divisão (linha {p.lineno(1)}).")
     parser.errok()
 
 def p_factor_paren_error(p):
@@ -311,48 +311,11 @@ def p_factor_paren_error(p):
     print(f"ERRO SINTÁTICO: expressão inválida entre parênteses (linha {p.lineno(1)}).")
     parser.errok()
     
-def p_id_list_reserved(p):
-    '''id_list : reserved
-               | id_list ',' reserved'''
-    print(f"ERRO SINTÁTICO: palavra reservada usada como identificador (linha {p.lineno(1)}).")
-    parser.errok()
-    
-def p_attr_reserved(p):
-    '''attr : reserved ATRIBUICAO expr'''
-    print(f"ERRO SINTÁTICO: palavra reservada não pode ser atribuída (linha {p.lineno(1)}).")
-    parser.errok()
-    
-def p_factor_reserved(p):
-    '''factor : reserved'''
-    print(f"ERRO SINTÁTICO: palavra reservada usada como variável/constante (linha {p.lineno(1)}).")
+def p_write_trailing_comma(p):
+    '''write : WRITE '(' expr_list ',' ')' '''
+    print(f"ERRO SINTÁTICO: falta expressão após ',' em 'write(...)' (linha {p.lineno(4)}).")
     parser.errok()
 
-def p_program_reserved(p):
-    '''program : PROGRAM reserved ';' block '.' '''
-    print(f"ERRO SINTÁTICO: palavra reservada usada como nome do programa (linha {p.lineno(1)}).")
-    parser.errok()
-
-def p_reserved(p):
-    '''reserved : IF
-                | THEN
-                | ELSE
-                | WHILE
-                | DO
-                | READ
-                | WRITE
-                | VAR
-                | PROGRAM
-                | BEGIN
-                | END
-                | DIV
-                | OR
-                | AND
-                | NOT
-                | TRUE
-                | FALSE
-                | INTEGER
-                | BOOLEAN'''
-    pass
 
 # -----------------------------------------------------
 # Parser
