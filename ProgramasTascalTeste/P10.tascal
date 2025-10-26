@@ -1,7 +1,7 @@
 program P10;
 var n: integer;
-var a, b, t: integer;
-var nonneg: boolean;
+    a, b, t: integer;
+    nonneg: boolean;
 begin
   read(n);
   nonneg := not (n < 0);

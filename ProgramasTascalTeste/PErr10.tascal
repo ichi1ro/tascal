@@ -1,6 +1,6 @@
 program PErr10;
 var x: integer;
-var p: boolean;
+    p: boolean;
 begin
   x := 3;
   p := (x = true);

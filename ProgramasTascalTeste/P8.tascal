@@ -1,6 +1,6 @@
 program P8;
 var x: integer;
-var b: boolean;
+    b: boolean;
 begin
   x := 3;
   b := x = 3;

@@ -1,6 +1,6 @@
 program PErr06;
 var x: integer;
-var x: boolean;
+    x: boolean;
 begin
   x := 1;
   write(x)

@@ -70,7 +70,8 @@ t_ignore = ' \t'
 
 def t_error(t):
     col = calcula_coluna(t, t.lexer)
-    print(f"ERRO: Símbolo ilegal {t.value[0]!r} na linha {t.lineno}, coluna {col}")
+    #print(f"ERRO LÉXICO: Símbolo ilegal {t.value[0]!r} (linha {t.lineno}, coluna {col})")
+    print(f"ERRO LÉXICO: Símbolo ilegal {t.value[0]!r} (linha {t.lineno}).")
     t.lexer.skip(1)
 
 lexico = lex.lex()
