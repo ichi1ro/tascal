@@ -1,0 +1,6 @@
+program PErr15;
+var x: integer;
+begin
+  read(x + 1);
+  write(x)
+end.

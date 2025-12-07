@@ -1,0 +1,9 @@
+program parimpar;
+var n : integer;
+    par : boolean;
+
+begin
+    read(n);
+    par := ((n div 2) * 2) = n;
+    write(par)
+end.

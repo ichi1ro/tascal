@@ -1,0 +1,9 @@
+program PErr20;
+var
+    x: integer;
+    x: boolean;
+begin
+    x := 10;
+    write(x);
+    x := 5 * 1
+end.

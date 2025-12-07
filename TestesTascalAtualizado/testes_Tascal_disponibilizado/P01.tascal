@@ -1,0 +1,9 @@
+program calculo_imc;
+var
+    peso_kg, altura_cm, altura_quadrado, imc : integer;
+begin
+    read(peso_kg, altura_cm);
+    altura_quadrado := altura_cm * altura_cm;
+    imc := (peso_kg * 10000) div altura_quadrado;
+    write(imc)
+end.

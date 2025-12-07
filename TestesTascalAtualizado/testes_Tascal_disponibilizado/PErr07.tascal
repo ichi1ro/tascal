@@ -1,0 +1,6 @@
+program PErr07;
+var x: integer;
+begin
+  x := true;
+  write(x)
+end.

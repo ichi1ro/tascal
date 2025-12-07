@@ -1,0 +1,7 @@
+program divisaoInteira;
+var a, b, c: integer;
+begin
+  read(a, b);
+  c := a div b;
+  write(c)
+end.

@@ -1,0 +1,4 @@
+program PErr16;
+begin
+  read(42)
+end.

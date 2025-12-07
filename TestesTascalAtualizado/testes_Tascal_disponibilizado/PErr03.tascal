@@ -1,0 +1,9 @@
+program PErr03;
+var x: integer;
+begin
+  x := 1;
+  if x > 0
+    write(x)
+  else
+    write(0)
+end.

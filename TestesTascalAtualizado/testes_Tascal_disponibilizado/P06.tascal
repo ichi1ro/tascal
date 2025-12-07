@@ -1,0 +1,8 @@
+program exprBooleana;
+var p, q, r: boolean;
+begin
+  p := true;
+  q := false;
+  r := not p or q and true;
+  write(r)
+end.

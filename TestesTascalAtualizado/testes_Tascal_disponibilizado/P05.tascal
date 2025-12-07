@@ -1,0 +1,9 @@
+program MaiorQue5;
+var x: integer;
+begin
+  read(x);
+  if x >= 5 then
+    write(true)
+  else
+    write(false)
+end.

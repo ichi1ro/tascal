@@ -1,0 +1,8 @@
+program exprAritm;
+var x, result: integer;
+
+begin
+  read(x);
+  result := 2 + 3 * 4 - x;
+  write(result)
+end.

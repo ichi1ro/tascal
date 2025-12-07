@@ -1,0 +1,5 @@
+program PErr05;
+begin
+  x := 10;
+  write(x)
+end.

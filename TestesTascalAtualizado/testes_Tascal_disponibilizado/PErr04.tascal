@@ -1,0 +1,6 @@
+program PErr04;
+begin
+  write(1);
+  if true then
+  begin
+    write(2)

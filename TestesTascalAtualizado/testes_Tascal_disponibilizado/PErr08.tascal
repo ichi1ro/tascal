@@ -1,0 +1,7 @@
+program PErr08;
+var b1, b2: boolean;
+begin
+  b1 := true;
+  b2 := false;
+  write(b1 + b2)
+end.

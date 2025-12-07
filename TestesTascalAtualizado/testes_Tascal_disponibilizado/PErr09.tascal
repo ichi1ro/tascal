@@ -1,0 +1,6 @@
+program PErr09;
+var a, b: integer;
+begin
+  a := 1; b := 2;
+  write(a and b)
+end.

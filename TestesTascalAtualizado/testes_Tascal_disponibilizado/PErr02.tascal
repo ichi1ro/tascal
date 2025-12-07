@@ -1,0 +1,6 @@
+program PErr02;
+var if: integer;
+begin
+  if := 3;
+  write(if)
+end.

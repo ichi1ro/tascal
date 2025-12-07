@@ -1,0 +1,18 @@
+program primo;
+var n, i : integer;
+    eh : boolean;
+
+begin
+    read(n);
+    eh := true;
+    i := 2;
+
+    while i < n do
+    begin
+        if (n div i) * i = n then
+            eh := false;
+        i := i + 1
+    end;
+
+    write(eh)
+end.
